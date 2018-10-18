@@ -52,7 +52,25 @@ var handleComponentMessage = async (requestMessage, query) => {
     return '';
 }
 
+var handleMessage = async (requestMessage, query) => {
+    let signature = query.msg_signature;
+    let timestamp = query.timestamp;
+    let nonce = query.nonce;
+    console.log("Receive messasge from weixin \nsignature: " + signature + "\ntimestamp: " + timestamp + "\nnonce: " + nonce);
+    var requestMessage = await resolveMessage(requestMessage);
+    console.log('---------requestMessage---------');
+    console.log(requestMessage);
+    let cryptor = new wechatCrypto('mingxingshuo', 'tw4a1yTUv0VJURGNif96ibI4z3oWPJJWpuo2mHTvzLb', 'wx4b715a7b61bfe0a4');
+    let encryptMessage = requestMessage.Encrypt;
+    let decryptMessage = cryptor.decrypt(encryptMessage);
 
+    console.log('Receive messasge from weixin decrypted :' + JSON.stringify(decryptMessage));
+
+    var message = await resolveMessage(decryptMessage.message);
+    console.log('----------handleMessage-----------')
+    console.log(message)
+    return '';
+}
 
 let getAuthorizeUrl = async function() {
     let url = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=%APPID%&pre_auth_code=%AUTH_CODE%&redirect_uri=%REDIRECT_URI%'
@@ -97,7 +115,8 @@ let queryAuthorizeInfo = async (auth_code) => {
 module.exports = {
     getAuthorizeUrl : getAuthorizeUrl,
     queryAuthorizeInfo : queryAuthorizeInfo,
-    handleComponentMessage : handleComponentMessage
+    handleComponentMessage : handleComponentMessage,
+    handleMessage : handleMessage
 }
 
 
