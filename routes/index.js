@@ -72,7 +72,7 @@ var message = async (ctx, next)=>{
     let requestString = ctx.request.body;
     let requestMessage = xmlUtil.formatMessage(requestString.xml);
     let query = ctx.query;
-    let result = await componentService.handleComponentMessage(requestMessage, query);
+    let result = await componentService.handleMessage(requestMessage, query);
     ctx.response.body = 'success';
 }
 
@@ -81,6 +81,7 @@ router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
 router.post('/auth',xml_msg,handleComponentMessage);
 router.post('/message/:appid/callback',xml_msg,message);
+
 router.get('/index',async function (ctx, next) {
     await ctx.render('index');
 })
