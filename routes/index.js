@@ -66,6 +66,9 @@ var queryAuthorizeInfo =  async (ctx, next) => {
 };
 
 var message = async (ctx, next)=>{
+    let appid = ctx.params.appid;
+    console.log('------appid-----');
+    console.log(appid);
     let requestString = ctx.request.body;
     let requestMessage = xmlUtil.formatMessage(requestString.xml);
     let query = ctx.query;
@@ -77,7 +80,7 @@ const router = require('koa-router')()
 router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
 router.post('/auth',xml_msg,handleComponentMessage);
-router.post('/message',xml_msg,message);
+router.post('/message/:appid/callback',xml_msg,message);
 router.get('/index',async function (ctx, next) {
     await ctx.render('index');
 })
