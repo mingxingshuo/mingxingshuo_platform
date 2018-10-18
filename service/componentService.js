@@ -24,7 +24,9 @@ var handleComponentMessage = async (requestMessage, query) => {
     let timestamp = query.timestamp;
     let nonce = query.nonce;
     console.log("Receive messasge from weixin \nsignature: " + signature + "\ntimestamp: " + timestamp + "\nnonce: " + nonce);
-
+    var requestMessage = await resolveMessage(requestMessage);
+    console.log('---------requestMessage---------');
+    console.log(requestMessage);
     let cryptor = new wechatCrypto('mingxingshuo', 'tw4a1yTUv0VJURGNif96ibI4z3oWPJJWpuo2mHTvzLb', 'wx4b715a7b61bfe0a4');
     let encryptMessage = requestMessage.Encrypt;
     let decryptMessage = cryptor.decrypt(encryptMessage);

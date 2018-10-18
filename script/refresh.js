@@ -21,7 +21,7 @@ var refreshComponentAccessToken = async function() {
 
     var component_access_token_result = await http.doHttps_withdata(https_options, componentTokenPostData);
     var access_token_json = JSON.parse(component_access_token_result);
-    logger.debug('Refresh component_access_token result: ' + component_access_token_result);
+    console.log('Refresh component_access_token result: ' + component_access_token_result);
 
     if(access_token_json.errcode != undefined) {
         return;
@@ -48,7 +48,7 @@ var refreshComponentAuthCode = async function() {
     https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
     var component_preauthcode_result = await http.doHttps_withdata(https_options, componentAuthCodePostData);
     var preauthcode_json = JSON.parse(component_preauthcode_result);
-    logger.debug('Refresh pre_auth_code result: ' + component_preauthcode_result);
+    console.log('Refresh pre_auth_code result: ' + component_preauthcode_result);
     if(preauthcode_json.errcode != undefined) {
         return;
     }
