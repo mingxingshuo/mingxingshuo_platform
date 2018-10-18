@@ -6,16 +6,46 @@ const componentService = require('./../service/componentService.js');
 //Be called when unauthorized
 //Be called when refresh
 var handleComponentMessage = async (ctx, next) => {
+
     console.log("--------------ctx.request.body--------------")
     console.log(ctx.request.body)
-    console.log("--------------ctx.req.body--------------")
-    console.log(ctx.req.body)
+    
+    console.log("--------------ctx.query--------------")
+    console.log(ctx.query)
+
     let requestString = ctx.request.body;
     let requestMessage = xmlUtil.formatMessage(requestString.xml);
     let query = ctx.query;
     let result = await componentService.handleComponentMessage(requestMessage, query);
     ctx.response.body = 'success';
 }
+
+var xml_msg = async function(ctx,next){
+    if (ctx.method == 'POST' && ctx.is('text/xml')) {
+            let promise = new Promise(function (resolve, reject) {
+                let buf = ''
+                ctx.req.setEncoding('utf8')
+                ctx.req.on('data', (chunk) => {
+                    buf += chunk
+                })
+                ctx.req.on('end', () => {
+                    resolve(buf)
+                })
+            })
+
+            await promise.then((result) => {
+                    ctx.request.body.xml = result
+                })
+                .catch((e) => {
+                    e.status = 400
+                })
+            next()
+        } else {
+            await next()
+        }
+}
+
+
 var componentAuthorize = async (ctx, next) => {
     let url = await componentService.getAuthorizeUrl();
     ctx.redirect(url);
@@ -45,7 +75,7 @@ var queryAuthorizeInfo =  async (ctx, next) => {
 const router = require('koa-router')()
 router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
-router.post('/auth',handleComponentMessage);
+router.post('/auth',xml_msg,handleComponentMessage);
 
 router.get('/index',async function (ctx, next) {
     await ctx.render('index');

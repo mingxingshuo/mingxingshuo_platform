@@ -94,5 +94,6 @@ let queryAuthorizeInfo = async (auth_code) => {
 
 module.exports = {
     getAuthorizeUrl : getAuthorizeUrl,
-    queryAuthorizeInfo : queryAuthorizeInfo
+    queryAuthorizeInfo : queryAuthorizeInfo,
+    handleComponentMessage : handleComponentMessage
 }
