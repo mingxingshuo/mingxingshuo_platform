@@ -56,6 +56,11 @@ var refreshComponentAuthCode = async function() {
     await mem.set("component_auth_code",auth_code,30*60)
 }
 
+module.exports = {
+    refreshComponentAccessToken : refreshComponentAccessToken,
+    refreshComponentAuthCode : refreshComponentAuthCode
+}
+
 //refresh component_access_token every hour
 var refreshComponentAccessTokenJob = schedule.scheduleJob('0 0 */1 * * *', refreshComponentAccessToken);
 

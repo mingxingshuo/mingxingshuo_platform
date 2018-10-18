@@ -6,13 +6,6 @@ const componentService = require('./../service/componentService.js');
 //Be called when unauthorized
 //Be called when refresh
 var handleComponentMessage = async (ctx, next) => {
-
-    console.log("--------------ctx.request.body--------------")
-    console.log(ctx.request.body)
-    
-    console.log("--------------ctx.query--------------")
-    console.log(ctx.query)
-
     let requestString = ctx.request.body;
     let requestMessage = xmlUtil.formatMessage(requestString.xml);
     let query = ctx.query;

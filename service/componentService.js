@@ -99,3 +99,16 @@ module.exports = {
     queryAuthorizeInfo : queryAuthorizeInfo,
     handleComponentMessage : handleComponentMessage
 }
+
+
+async function test(){
+    var xml = '<xml>\n    <AppId><![CDATA[wx4b715a7b61bfe0a4]]></AppId>\n    <Encrypt><![CDATA[mArdndfPF44xyfGEIy5yCCuUFKAAlSr3UIoAbfjTogTNrxk43MD3We6+IG7YauTDvaSdH+VHj4xo6xTC2s1/fCE4Wda3IT4ZG+z2m02XR8lshBxKKdGoVbVdw8BrEWb5uuANjJ+I8b+HVQK9SPDC9wkKmt27+AT2nAOBcnakgzItIK/aFi2C1H8r7tlG40AYWdn6bSGGKRWLeoNlCRMkOeE4I1QzfnbV6pmSIV5Ipvcm/dMby3SU3ScKEVNP8/9iJ6O334Y9SOQKsc6OjNnYa0ny3lf0Sqzri/h20hgyNrKqCofqQN3O0OtXxEuZ6gB6irSQNFz6hEHb6OeMHWY/7nNJCmnKAL0J4lPIliVtguw1gqRi8okPuH7J3COsdzfIBNvDyWM4DHnBG5hmNMRi8tG+VCvvDNuC8Qrdq0XDUGEbVS2oB0w2EYdouhA+EGySyliS88YiAY4OTvAonbwxAQ==]]></Encrypt>\n</xml>\n';
+    var requestMessage = await resolveMessage(xml)
+    console.log('-----------requestMessage.Encrypt-------------');
+    console.log(requestMessage.Encrypt);
+    let encryptMessage = requestMessage.Encrypt;
+    let cryptor = new wechatCrypto('mingxingshuo', 'tw4a1yTUv0VJURGNif96ibI4z3oWPJJWpuo2mHTvzLb', 'wx4b715a7b61bfe0a4');
+    let decryptMessage = cryptor.decrypt(encryptMessage);
+    console.log('Receive messasge from weixin decrypted :' + JSON.stringify(decryptMessage));
+}
+
