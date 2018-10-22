@@ -72,7 +72,21 @@ var message = async (ctx, next)=>{
     let requestString = ctx.request.body;
     let requestMessage = xmlUtil.formatMessage(requestString.xml);
     let query = ctx.query;
-    let result = await componentService.handleMessage(requestMessage, query);
+    let message = await componentService.handleMessage(requestMessage, query);
+    user = {
+        openid : message.FromUserName,
+        appid :appid,
+        action_time : Date.now()
+    }
+    if(message.MsgType === 'event'){
+            if(message.Event === 'subscribe'){
+                user.subscribe_time =Date.now();
+                user.subscribe_flag = true;   
+            }else if(message.Event === 'unsubscribe'){
+                user.unsubscribe_time =Date.now();
+                user.subscribe_flag = false;
+            }
+        }
     ctx.response.body = 'success';
 }
 
