@@ -67,9 +67,8 @@ var handleMessage = async (requestMessage, query) => {
     console.log('Receive messasge from weixin decrypted :' + JSON.stringify(decryptMessage));
 
     var message = await resolveMessage(decryptMessage.message);
-    console.log('----------handleMessage-----------')
-    console.log(message)
-    return '';
+    
+    return message;
 }
 
 let getAuthorizeUrl = async function() {
