@@ -74,7 +74,7 @@ var message = async (ctx, next)=>{
     let query = ctx.query;
     let message = await componentService.handleMessage(requestMessage, query);
     user = {
-        openid : message.FromUserName,
+        open_id : message.FromUserName,
         appid :appid,
         action_time : Date.now()
     }
@@ -88,7 +88,7 @@ var message = async (ctx, next)=>{
         }
     }
     await ComponentUserModel.findOneAndUpdate(
-        {openid : message.FromUserName,appid :appid},
+        {open_id : message.FromUserName,appid :appid},
         user,
         {upsert: true})
     ctx.response.body = 'success';
