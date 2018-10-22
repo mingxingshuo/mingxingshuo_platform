@@ -3,7 +3,7 @@ const xmlUtil = require("./../utils/xmlUtil.js");
 const wechatCrypto = require('./../utils/cryptoUtil.js');
 const mem = require("./../utils/mem.js");
 const authModel= require("./../model/AuthorizationInfo.js");
-const http = require('http');
+const http = require('./../utils/httpUtils.js');
 //analyze the decrypted message (xml => json)
 
 var resolveMessage = messageXML => {

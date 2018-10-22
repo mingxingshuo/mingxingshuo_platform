@@ -1,6 +1,6 @@
 const xmlUtil = require("./../utils/xmlUtil.js");
 const componentService = require('./../service/componentService.js');
-
+const ComponentUserModel = require("./../model/ComponentUser.js")
 //Be called every 10 minutes to refresh component_verify_ticket by wechat
 //Be called when authorized
 //Be called when unauthorized
@@ -79,14 +79,18 @@ var message = async (ctx, next)=>{
         action_time : Date.now()
     }
     if(message.MsgType === 'event'){
-            if(message.Event === 'subscribe'){
-                user.subscribe_time =Date.now();
-                user.subscribe_flag = true;   
-            }else if(message.Event === 'unsubscribe'){
-                user.unsubscribe_time =Date.now();
-                user.subscribe_flag = false;
-            }
+        if(message.Event === 'subscribe'){
+            user.subscribe_time =Date.now();
+            user.subscribe_flag = true;   
+        }else if(message.Event === 'unsubscribe'){
+            user.unsubscribe_time =Date.now();
+            user.subscribe_flag = false;
         }
+    }
+    await ComponentUserModel.findOneAndUpdate(
+        {openid : message.FromUserName,appid :appid},
+        user,
+        {upsert: true})
     ctx.response.body = 'success';
 }
 
