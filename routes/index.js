@@ -73,7 +73,7 @@ var message = async (ctx, next)=>{
     let requestMessage = xmlUtil.formatMessage(requestString.xml);
     let query = ctx.query;
     let message = await componentService.handleMessage(requestMessage, query);
-    user = {
+    let user = {
         open_id : message.FromUserName,
         appid :appid,
         action_time : Date.now()
@@ -87,8 +87,13 @@ var message = async (ctx, next)=>{
             user.subscribe_flag = false;
         }
     }
-    await ComponentUserModel.update(
-        {open_id : message.FromUserName,appid :appid},
+    console.log("-------user--------")
+    console.log(user)
+
+    await ComponentUserModel.findOneAndUpdate(
+        { "open_id" : message.FromUserName,
+            "appid" : appid
+        },
         user,
         {upsert: true})
     ctx.response.body = 'success';
