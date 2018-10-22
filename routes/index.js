@@ -87,7 +87,7 @@ var message = async (ctx, next)=>{
             user.subscribe_flag = false;
         }
     }
-    await ComponentUserModel.findOneAndUpdate(
+    await ComponentUserModel.update(
         {open_id : message.FromUserName,appid :appid},
         user,
         {upsert: true})
