@@ -101,7 +101,7 @@ var message = async (ctx, next)=>{
             console.log(err)
         })
     //用户回复
-    ctx.response.body = 'success';
+    ctx.response.body = '';
 }
 
 var send_text = async (ctx,next) =>{
@@ -133,7 +133,7 @@ router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
 router.post('/auth',xml_msg,handleComponentMessage);
 router.post('/message/:appid/callback',xml_msg,message);
-router.get('send_text',send_text);
+router.get('/send_text',send_text);
 
 router.get('/',async function (ctx, next) {
     await ctx.render('index');
