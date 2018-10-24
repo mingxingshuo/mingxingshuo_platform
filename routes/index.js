@@ -1,6 +1,8 @@
 const xmlUtil = require("./../utils/xmlUtil.js");
 const componentService = require('./../service/componentService.js');
 const ComponentUserModel = require("./../model/ComponentUser.js")
+const authModel = require("./../model/AuthorizationInfo.js")
+const httpUtil = require("./../utils/httpUtils.js");
 //Be called every 10 minutes to refresh component_verify_ticket by wechat
 //Be called when authorized
 //Be called when unauthorized
@@ -96,7 +98,32 @@ var message = async (ctx, next)=>{
         },
         user,
         {upsert: true})
-    ctx.response.body = 'success';
+    //用户回复
+    ctx.response.body = '假装回复';
+}
+
+var send_text = async (ctx,next) =>{
+    var data = {
+        "touser" : 'o1U2E1E06mVsdIEs3Gg05EOP7BS0',
+        "msgtype":"text",
+        "text":
+        {
+             "content":"测试客服消息"
+        }
+    }
+    let https_options = {
+        hostname : 'api.weixin.qq.com',
+        path : '/cgi-bin/message/custom/send?access_token=%ACCESS_TOKEN%',
+        method : 'POST'
+    };
+
+    var access_token = authModel.findOne().authorizer_access_token;
+    console.log('--------access_token---------')
+    console.log(access_token)
+    https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
+    
+    var body = await httpUtil.doHttps_withdata(https_options,data)
+    console.log(body)
 }
 
 const router = require('koa-router')()
@@ -104,9 +131,12 @@ router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
 router.post('/auth',xml_msg,handleComponentMessage);
 router.post('/message/:appid/callback',xml_msg,message);
+router.get('send_text',send_text);
 
-router.get('/index',async function (ctx, next) {
+router.get('/',async function (ctx, next) {
     await ctx.render('index');
 })
+
+
 
 module.exports = router
