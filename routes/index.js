@@ -128,6 +128,7 @@ var send_text = async (ctx,next) =>{
     
     var body = await httpUtil.doHttps_withdata(https_options,data)
     console.log(body)
+    ctx.response.body = '客服消息发生完毕';
 }
 
 const router = require('koa-router')()
