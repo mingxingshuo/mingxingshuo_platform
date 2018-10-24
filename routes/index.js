@@ -120,7 +120,8 @@ var send_text = async (ctx,next) =>{
         method : 'POST'
     };
 
-    var access_token = authModel.findOne().authorizer_access_token;
+    var auth= await authModel.findOne({});
+    var access_token = auth.authorizer_access_token
     console.log('--------access_token---------')
     console.log(access_token)
     https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
@@ -139,7 +140,6 @@ router.get('/send_text',send_text);
 router.get('/',async function (ctx, next) {
     await ctx.render('index');
 })
-
 
 
 module.exports = router
