@@ -133,7 +133,9 @@ var send_text = async (ctx,next) =>{
 
 var send_all_text = async (ctx,next)=>{
     var data = {
-        "touser" : ['o1U2E1E06mVsdIEs3Gg05EOP7BS0'],
+        "touser" : [
+            'o1U2E1E06mVsdIEs3Gg05EOP7BS0'
+        ],
         "msgtype":"text",
         "text":
         {
@@ -143,7 +145,7 @@ var send_all_text = async (ctx,next)=>{
 
     let https_options = {
         hostname : 'api.weixin.qq.com',
-        path : '/cgi-bin/message/custom/send?access_token=%ACCESS_TOKEN%',
+        path : '/cgi-bin/message/mass/send?access_token=%ACCESS_TOKEN%',
         method : 'POST'
     };
 
