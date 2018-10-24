@@ -134,7 +134,9 @@ var send_text = async (ctx,next) =>{
 var send_all_text = async (ctx,next)=>{
     var data = {
         "touser" : [
-            'o1U2E1E06mVsdIEs3Gg05EOP7BS0'
+            'o1U2E1E06mVsdIEs3Gg05EOP7BS0',
+            'o1U2E1DGuUvpiFDORvQzctKthr60',
+            'ozy4qt5QUADNXORxCVipKMV9dss0'
         ],
         "msgtype":"text",
         "text":
