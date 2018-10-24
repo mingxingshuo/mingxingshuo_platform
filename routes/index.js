@@ -102,6 +102,7 @@ var message = async (ctx, next)=>{
         })
     //用户回复
     ctx.response.body = '';
+    console.log('回复完了')
 }
 
 var send_text = async (ctx,next) =>{
