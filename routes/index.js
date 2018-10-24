@@ -131,12 +131,38 @@ var send_text = async (ctx,next) =>{
     ctx.response.body = '客服消息发生完毕';
 }
 
+var send_all_text = async (ctx,next)=>{
+    var data = {
+        "touser" : ['o1U2E1E06mVsdIEs3Gg05EOP7BS0'],
+        "msgtype":"text",
+        "text":
+        {
+             "content":"测试根据openid列表群发消息"
+        }
+    }
+
+    let https_options = {
+        hostname : 'api.weixin.qq.com',
+        path : '/cgi-bin/message/custom/send?access_token=%ACCESS_TOKEN%',
+        method : 'POST'
+    };
+
+    var auth= await authModel.findOne({});
+    var access_token = auth.authorizer_access_token
+    https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
+    var body = await httpUtil.doHttps_withdata(https_options,data)
+    console.log(body)
+    ctx.response.body = body;
+
+}
+
 const router = require('koa-router')()
 router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
 router.post('/auth',xml_msg,handleComponentMessage);
 router.post('/message/:appid/callback',xml_msg,message);
 router.get('/send_text',send_text);
+router.get('/send_all_text',send_all_text);
 
 router.get('/',async function (ctx, next) {
     await ctx.render('index');
