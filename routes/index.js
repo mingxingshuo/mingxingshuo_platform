@@ -92,14 +92,16 @@ var message = async (ctx, next)=>{
     console.log("-------user--------")
     console.log(user)
 
-    await ComponentUserModel.findOneAndUpdate(
+    ComponentUserModel.findOneAndUpdate(
         { "open_id" : message.FromUserName,
-            "appid" : appid
+        "appid" : appid
         },
         user,
-        {upsert: true})
+        {upsert: true},function(err){
+            console.log(err)
+        })
     //用户回复
-    ctx.response.body = '假装回复';
+    ctx.response.body = 'success';
 }
 
 var send_text = async (ctx,next) =>{
