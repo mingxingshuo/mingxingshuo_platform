@@ -58,7 +58,7 @@ var queryAuthorizeInfo =  async (ctx, next) => {
 };
 
 var getAppInfo = async (ctx, next) =>{
-    var auth = await authModel.findOne({appid:authorization_info.authorizer_appid})
+    var auth = await authModel.findOne({appid:ctx.params.appid})
     ctx.response.body = auth
 }
 
@@ -163,6 +163,7 @@ router.post('/message/:appid/callback',xml_msg,message);
 
 router.get('/send_text',send_text);
 router.get('/send_all_text',send_all_text);
+router.get('/appinfo/:appid',getAppInfo);
 
 router.get('/',async function (ctx, next) {
     await ctx.render('index');
