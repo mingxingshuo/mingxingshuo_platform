@@ -53,12 +53,14 @@ var queryAuthorizeInfo =  async (ctx, next) => {
     let auth_code = query.auth_code;
     let expires_in = query.expires_in;
     let authorization_info = await componentService.queryAuthorizeInfo(auth_code);
-    await refresh.get_authorizer_infoJob({appid:authorization_info.authorizer_appid})
-    var auth = await authModel.findOne({appid:authorization_info.authorizer_appid})
-    ctx.response.body = auth
+    await refresh.get_authorizer_info({appid:authorization_info.authorizer_appid})
+    ctx.redirect('/appinfo/'+authorization_info.authorizer_appid)
 };
 
-
+var getAppInfo = async (ctx, next) =>{
+    var auth = await authModel.findOne({appid:authorization_info.authorizer_appid})
+    ctx.response.body = auth
+}
 
 var message = async (ctx, next)=>{
     let appid = ctx.params.appid;
