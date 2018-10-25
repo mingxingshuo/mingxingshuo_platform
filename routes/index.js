@@ -3,6 +3,7 @@ const componentService = require('./../service/componentService.js');
 const ComponentUserModel = require("./../model/ComponentUser.js")
 const authModel = require("./../model/AuthorizationInfo.js")
 const httpUtil = require("./../utils/httpUtils.js");
+const refresh = require("./../script/refresh.js")
 //Be called every 10 minutes to refresh component_verify_ticket by wechat
 //Be called when authorized
 //Be called when unauthorized
@@ -51,21 +52,13 @@ var queryAuthorizeInfo =  async (ctx, next) => {
     let query = ctx.query;
     let auth_code = query.auth_code;
     let expires_in = query.expires_in;
-
     let authorization_info = await componentService.queryAuthorizeInfo(auth_code);
-
-    let html = '<html><body>'
-        + '<p>auth_code = ' + query.auth_code + '</p>'
-        + '<p>authorizer_appid = ' + authorization_info.authorizer_appid + '</p>'
-        + '<p>access_token = ' + authorization_info.authorizer_access_token + '</p>'
-        + '<p>refresh_token = ' + authorization_info.authorizer_refresh_token + '</p>'
-        + '<p>func_info = ' + JSON.stringify(authorization_info.func_info) + '</p>'
-        + '<p>expires_in = ' + query.expires_in + '</p>'
-        + '</body></html>';
-
-    ctx.response.type ='text/html';
-    ctx.response.body = html;
+    await refresh.get_authorizer_infoJob({appid:authorization_info.authorizer_appid})
+    var auth = await authModel.findOne({appid:authorization_info.authorizer_appid})
+    ctx.response.body = auth
 };
+
+
 
 var message = async (ctx, next)=>{
     let appid = ctx.params.appid;

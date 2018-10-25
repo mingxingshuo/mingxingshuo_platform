@@ -90,7 +90,9 @@ var refreshAccessToken = async function(con={}) {
 }
 
 var get_authorizer_info = async function(con={}) {
-    var auths = await authModel.find(con)
+   
+    var  auths = await authModel.find(con)
+   
     var access_token = await mem.get("component_access_token");
     var https_options = {
         hostname : 'api.weixin.qq.com',
@@ -122,10 +124,10 @@ var get_authorizer_info = async function(con={}) {
     }
 }
 
-refreshComponentAccessToken()
+/*refreshComponentAccessToken()
 setTimeout(function(){
     get_authorizer_info()
-},10*1000)
+},10*1000)*/
 
 function start(){
     //refresh component_access_token every hour
