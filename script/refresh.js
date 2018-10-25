@@ -122,7 +122,10 @@ var get_authorizer_info = async function(con={}) {
     }
 }
 
-get_authorizer_info()
+refreshComponentAccessToken()
+setTimeout(function(){
+    get_authorizer_info()
+},10*1000)
 
 function start(){
     //refresh component_access_token every hour
