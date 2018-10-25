@@ -75,7 +75,7 @@ var refreshAccessToken = async function(con={}) {
                 authorizer_appid : auth.appid,
                 authorizer_refresh_token : auth.refresh_token
             }
-            var result = await http.doHttps_withdata(https_options, componentAuthCodePostData);
+            var result = await http.doHttps_withdata(https_options, post_data);
             var data = JSON.parse(result);
             auth.authorizer_access_token = data.authorizer_access_token
             auth.expires_in = data.expires_in
@@ -105,7 +105,7 @@ var get_authorizer_info = async function(con={}) {
                 component_appid : "wx4b715a7b61bfe0a4",
                 authorizer_appid : auth.appid
             }
-            var result = await http.doHttps_withdata(https_options, componentAuthCodePostData);
+            var result = await http.doHttps_withdata(https_options, post_data);
             var info = JSON.parse(result).authorizer_info;
             auth.service_type_info_id = info.service_type_info.id;
             auth.verify_type_info_id = info.verify_type_info.id;
