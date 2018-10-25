@@ -1,6 +1,7 @@
 const schedule = require('node-schedule');
 const http = require('./../utils/httpUtils.js');
 const mem = require('./../utils/mem.js');
+const authModel= require("./../model/AuthorizationInfo.js");
 
 //refresh component_access_token every 1 hour
 var refreshComponentAccessToken = async function() {
@@ -56,9 +57,40 @@ var refreshComponentAuthCode = async function() {
     await mem.set("component_auth_code",auth_code,30*60)
 }
 
+var refreshAccessToken = async function() {
+    var auths = await authModel.find({})
+    var access_token = await mem.get("component_access_token");
+    var https_options = {
+        hostname : 'api.weixin.qq.com',
+        path : '/cgi-bin/component/api_authorizer_token?component_access_token=%ACCESS_TOKEN%',
+        method : 'post'
+    };
+    https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
+    for (var i = 0; i <auths.length; i++) {
+        try{
+            var auth = auths[i];
+            var post_data={
+                component_appid : "wx4b715a7b61bfe0a4",
+                authorizer_appid : auth.appid,
+                authorizer_refresh_token : auth.refresh_token
+            }
+            var result = await http.doHttps_withdata(https_options, componentAuthCodePostData);
+            var data = JSON.parse(result);
+            auth.authorizer_access_token = data.authorizer_access_token
+            auth.expires_in = data.expires_in
+            auth.refresh_token = auth.authorizer_refresh_token
+            auth.save();
+        }catch(e){
+            console.log('-------refreshAccessToken err-------')
+            console.log(e)
+        }
+    }
+}
+
 module.exports = {
     refreshComponentAccessToken : refreshComponentAccessToken,
-    refreshComponentAuthCode : refreshComponentAuthCode
+    refreshComponentAuthCode : refreshComponentAuthCode,
+    refreshAccessToken : refreshAccessToken
 }
 
 //refresh component_access_token every hour
@@ -66,3 +98,6 @@ var refreshComponentAccessTokenJob = schedule.scheduleJob('0 0 */1 * * *', refre
 
 //refresh pre_auth_code every 20 minutes
 var refreshComponentAuthCodeJob = schedule.scheduleJob('10 */20 * * * *', refreshComponentAuthCode);
+
+
+var refreshAPPAccessTokenJob = schedule.scheduleJob('30 0 */1 * * *', refreshAccessToken);
