@@ -96,7 +96,7 @@ var get_authorizer_info = async function(con={}) {
     var access_token = await mem.get("component_access_token");
     var https_options = {
         hostname : 'api.weixin.qq.com',
-        path : '/cgi-bin/component/api_authorizer_token?component_access_token=%ACCESS_TOKEN%',
+        path : '/cgi-bin/component/api_get_authorizer_info?component_access_token=%ACCESS_TOKEN%',
         method : 'post'
     };
     https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
@@ -124,10 +124,7 @@ var get_authorizer_info = async function(con={}) {
     }
 }
 
-/*refreshComponentAccessToken()
-setTimeout(function(){
-    get_authorizer_info()
-},10*1000)*/
+get_authorizer_info({appid:'wx2f289986bee197b2'})
 
 function start(){
     //refresh component_access_token every hour
