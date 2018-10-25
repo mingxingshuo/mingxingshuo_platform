@@ -165,6 +165,7 @@ router.get('/componentAuthorize',componentAuthorize);
 router.get('/queryAuthorizeInfo',queryAuthorizeInfo);
 router.post('/auth',xml_msg,handleComponentMessage);
 router.post('/message/:appid/callback',xml_msg,message);
+
 router.get('/send_text',send_text);
 router.get('/send_all_text',send_all_text);
 

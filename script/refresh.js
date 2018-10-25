@@ -57,8 +57,9 @@ var refreshComponentAuthCode = async function() {
     await mem.set("component_auth_code",auth_code,30*60)
 }
 
-var refreshAccessToken = async function() {
-    var auths = await authModel.find({})
+//账号比较多，有待优化的细节
+var refreshAccessToken = async function(con={}) {
+    var auths = await authModel.find(con)
     var access_token = await mem.get("component_access_token");
     var https_options = {
         hostname : 'api.weixin.qq.com',
@@ -80,6 +81,7 @@ var refreshAccessToken = async function() {
             auth.expires_in = data.expires_in
             auth.refresh_token = auth.authorizer_refresh_token
             auth.save();
+            await mem.set('access_token_'+auth.appid,auth.authorizer_access_token,30)
         }catch(e){
             console.log('-------refreshAccessToken err-------')
             console.log(e)
@@ -87,17 +89,59 @@ var refreshAccessToken = async function() {
     }
 }
 
+var get_authorizer_info = async function(con={}) {
+    var auths = await authModel.find(con)
+    var access_token = await mem.get("component_access_token");
+    var https_options = {
+        hostname : 'api.weixin.qq.com',
+        path : '/cgi-bin/component/api_authorizer_token?component_access_token=%ACCESS_TOKEN%',
+        method : 'post'
+    };
+    https_options.path = https_options.path.replace('%ACCESS_TOKEN%', access_token);
+    for (var i = 0; i <auths.length; i++) {
+        try{
+            var auth = auths[i];
+            var post_data={
+                component_appid : "wx4b715a7b61bfe0a4",
+                authorizer_appid : auth.appid
+            }
+            var result = await http.doHttps_withdata(https_options, componentAuthCodePostData);
+            var info = JSON.parse(result).authorizer_info;
+            auth.service_type_info_id = info.service_type_info.id;
+            auth.verify_type_info_id = info.verify_type_info.id;
+            auth.user_name = info.user_name;
+            auth.qrcode_url = info.qrcode_url;
+            auth.nick_name = info.nick_name;
+            auth.save();
+        }catch(e){
+            console.log('-------get_authorizer_info err-------')
+            console.log(e)
+        }
+    }
+}
+
+get_authorizer_info()
+
+function start(){
+    //refresh component_access_token every hour
+    var refreshComponentAccessTokenJob = schedule.scheduleJob('0 0 */1 * * *', refreshComponentAccessToken);
+
+    //refresh pre_auth_code every 20 minutes
+    var refreshComponentAuthCodeJob = schedule.scheduleJob('10 */20 * * * *', refreshComponentAuthCode);
+
+    //refresh app access_token
+    var refreshAPPAccessTokenJob = schedule.scheduleJob('30 0 */1 * * *', refreshAccessToken);
+
+    //refresh app info
+    var get_authorizer_infoJob = schedule.scheduleJob('0 0 2 * * *',get_authorizer_info)
+}
+
 module.exports = {
     refreshComponentAccessToken : refreshComponentAccessToken,
     refreshComponentAuthCode : refreshComponentAuthCode,
-    refreshAccessToken : refreshAccessToken
+    refreshAccessToken : refreshAccessToken,
+    get_authorizer_info : get_authorizer_info,
+    start : start
 }
 
-//refresh component_access_token every hour
-var refreshComponentAccessTokenJob = schedule.scheduleJob('0 0 */1 * * *', refreshComponentAccessToken);
 
-//refresh pre_auth_code every 20 minutes
-var refreshComponentAuthCodeJob = schedule.scheduleJob('10 */20 * * * *', refreshComponentAuthCode);
-
-
-var refreshAPPAccessTokenJob = schedule.scheduleJob('30 0 */1 * * *', refreshAccessToken);
