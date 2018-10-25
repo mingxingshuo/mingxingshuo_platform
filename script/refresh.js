@@ -106,6 +106,8 @@ var get_authorizer_info = async function(con={}) {
                 authorizer_appid : auth.appid
             }
             var result = await http.doHttps_withdata(https_options, post_data);
+            console.log('-------get_authorizer_info reslut-------')
+            console.log(result)
             var info = JSON.parse(result).authorizer_info;
             auth.service_type_info_id = info.service_type_info.id;
             auth.verify_type_info_id = info.verify_type_info.id;
